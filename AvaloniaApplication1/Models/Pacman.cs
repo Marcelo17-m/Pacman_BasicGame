@@ -10,27 +10,28 @@ namespace AvaloniaApplication1.Models
 {
     internal class Pacman : GameObject
     {
-        private int _maxX = 785; //averiguar como sacarlo directamente del canvas
-        private int _maxY = 435; // 36 mide lo de arriba para el min
+        private readonly GameMap? _map;
         public enum PacmanDirection
         {
             Up, Down, Left, Right
         }
 
         public PacmanDirection Direction { get; set; } = PacmanDirection.Up;
+        public PacmanDirection? NextDirection { get; set; } = null;
 
-        public double Speed { get; set; } = 60.0;
+        public double Speed { get; set; } = 60.0; //basicamente los fps
 
         private readonly int _spriteSize;
 
-        public Pacman(double x, double y, Bitmap? sprite = null, int spriteSize = 15)
+        public Pacman(double x, double y, Bitmap? sprite = null, GameMap? map = null, int spriteSize = 16)
         {
             X = x;
             Y = y;
+            _map = map;
             _spriteSize = spriteSize;
-            Width = spriteSize;
-            Height = spriteSize;
-            Zindex = 2;
+            Width = spriteSize - 1.5;
+            Height = spriteSize - 1.5; // esto es para hacerlo mas pequeño de la celda del mapa.
+            Zindex = 6;
             Sprite = sprite;
 
             UpdateSpriteRect();
@@ -44,7 +45,7 @@ namespace AvaloniaApplication1.Models
                 return; 
             }
             
-            int spriteX = 15;
+            int spriteX = 16;
             int spriteY = 0; // Si los sprites están en múltiples filas, ajusta este valor
 
             switch (Direction)
@@ -58,11 +59,11 @@ namespace AvaloniaApplication1.Models
                     break;
 
                 case PacmanDirection.Up:
-                    spriteY = 2 * _spriteSize +2; // Tercer frame
+                    spriteY = 2 * _spriteSize; // Tercer frame
                     break;
 
                 case PacmanDirection.Down:
-                    spriteY = 3 * _spriteSize +2; // Cuarto frame
+                    spriteY = 3 * _spriteSize; // Cuarto frame
                     break;
                 default:
                     spriteY = 1; 
@@ -72,40 +73,107 @@ namespace AvaloniaApplication1.Models
             SourceRect = new Avalonia.Rect(spriteX, spriteY, _spriteSize, _spriteSize);
         }
 
-        public void SetDirection(PacmanDirection newDirection)
+        public void SetNextDirection(PacmanDirection newDirection)
         {
-            Direction = newDirection; 
-            UpdateSpriteRect();
+            NextDirection = newDirection;
         }
 
-
-         
         public override void Update(double deltaTime)
         {
             base.Update(deltaTime);
-            
-            // Mover el Pacman según su dirección y velocidad
+
+            if (_map == null) return;
+
+            // Mover el Pacman según su dirección y velocidad   
             double moveDistance = Speed * deltaTime;
-            
+
+            // esto es para saber si se puede mover hacia algun lado
+            if (NextDirection.HasValue)
+            {
+                double testX = X;
+                double testY = Y;
+
+                switch (NextDirection.Value)
+                {
+                    case PacmanDirection.Up:
+                        testY -= moveDistance;
+                        break;
+                    case PacmanDirection.Down:
+                        testY += moveDistance;
+                        break;
+                    case PacmanDirection.Left:
+                        testX -= moveDistance;
+                        break;
+                    case PacmanDirection.Right:
+                        testX += moveDistance;
+                        break;
+                }
+
+                if (_map.CanMoveTo(testX, testY, Width, Height))
+                {
+                    // alinearlo pq falla
+                    AllignToGrid(NextDirection.Value);
+
+                    //ahora si girar
+                    Direction = NextDirection.Value;
+                    NextDirection = null;
+                    UpdateSpriteRect();
+                }
+            }
+
+            // esto ya es para que se mueva normal
+            double newX = X;
+            double newY = Y;
+
             switch (Direction)
             {
                 case PacmanDirection.Up:
-                    Y -= moveDistance;
+                    newY -= moveDistance;
                     break;
                 case PacmanDirection.Down:
-                    Y += moveDistance;
+                    newY += moveDistance;
                     break;
                 case PacmanDirection.Left:
-                    X -= moveDistance;
+                    newX -= moveDistance;
                     break;
                 case PacmanDirection.Right:
-                    X += moveDistance;
+                    newX += moveDistance;
                     break;
             }
 
-            X = Math.Clamp(X, 0, _maxX);
-            Y = Math.Clamp(Y, 40, _maxY);
-            // ese 40 es para dejar espacio arriba
+            if (_map.CanMoveTo(newX, newY, Width, Height))
+            {
+                X = newX;
+                Y = newY;
+            }
+        }
+
+        private void AllignToGrid(PacmanDirection newDirection)
+        {
+            if (_map == null) return;
+
+            double centerX = X + Width / 2;
+            double centerY = Y + Height / 2;
+
+            var (row, col) = _map.WorldToTile(centerX, centerY);
+
+            var (tileX, tileY) = _map.TileToWorld(row, col);
+
+            double tileCenterX = tileX + _map.TileWidth / 2;
+            double tileCenterY = tileY + _map.TileHeight / 2;
+
+            switch (newDirection)
+            {
+                case PacmanDirection.Up:
+                case PacmanDirection.Down:
+                    X = tileCenterX - Width / 2;
+                    break;
+
+                case PacmanDirection.Left:
+                case PacmanDirection.Right:
+                    Y = tileCenterY - Height / 2;
+                    break;
+            }
         }
     }
 }

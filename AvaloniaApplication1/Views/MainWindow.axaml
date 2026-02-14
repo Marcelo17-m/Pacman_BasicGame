@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="using:AvaloniaApplication1"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="650"
         x:Class="AvaloniaApplication1.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
@@ -16,7 +16,9 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <Grid Width="800" Height="450" Background="{DynamicResource PrimaryBackGround}">
+    <Grid Width="1000" Height="650" Background="{DynamicResource PrimaryBackGround}">
+
+        <Grid IsVisible="{Binding IsMenuVisible}">
         <TextBlock
             Text="PACMAN" 
             FontSize="49" 
@@ -52,8 +54,8 @@
               CommandParameter="{Binding $self.IsChecked}"
               >
 
-    <Grid>
-        <PathIcon Classes="audio-on"
+        <Grid>
+            <PathIcon Classes="audio-on"
                   Data="{StaticResource speaker_regular}"
                   Width="24"
                   Height="24"
@@ -61,18 +63,20 @@
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"/>
 
-        <PathIcon Classes="audio-mute"
+            <PathIcon Classes="audio-mute"
                   Data="{StaticResource speaker_off_regular}"
                   Width="24"
                   Height="24"
                   Foreground="White"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"/>
-    </Grid>
+        </Grid>
+    </ToggleButton>
+</Grid>
 
-</ToggleButton>
 
-        <ContentControl Content="{Binding CurrentPage}">
+        <ContentControl Content="{Binding CurrentPage}"
+                        IsVisible="{Binding CurrentPage}">
             <ContentControl.DataTemplates>
                 <DataTemplate DataType="vm:GameWindowViewModel">
                     <local:GameWindow />

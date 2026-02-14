@@ -13,21 +13,25 @@ namespace AvaloniaApplication1.ViewModels
     {
         SoundManager SoundManager = new();
         [ObservableProperty]
-        private object? _currentPage;
+        private ViewModelBase? _currentPage;
+
+        public bool IsMenuVisible => CurrentPage == null;
         public MainWindowViewModel()
         {
-            CurrentPage = null;
+            _currentPage = null;
         }
 
         [RelayCommand]
         public void GoGame()
         {
             CurrentPage = new GameWindowViewModel(this);
+            OnPropertyChanged(nameof(IsMenuVisible));
         }
 
         public void GoBackToMenu()
         {
             CurrentPage = null;
+            OnPropertyChanged(nameof(IsMenuVisible));
         }
 
         [RelayCommand]

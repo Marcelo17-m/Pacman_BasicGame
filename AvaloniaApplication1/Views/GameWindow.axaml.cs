@@ -1,10 +1,12 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using AvaloniaApplication1.Models;
 using AvaloniaApplication1.ViewModels;
 using System;
 using System.Runtime.CompilerServices;
@@ -73,7 +75,27 @@ public partial class GameWindow : UserControl
 
         foreach (var gameObject in _viewModel.GameObjects)
         {
-            if (!gameObject.IsActive || gameObject.Sprite == null)
+            if (!gameObject.IsActive)
+            {
+                continue;
+            }
+
+            if (gameObject is Pellet pellet)
+            {
+                var ellipse = new Ellipse
+                {
+                    Width = pellet.Width,
+                    Height = pellet.Height,
+                    Fill = pellet.FillColor,
+                    [Canvas.LeftProperty] = pellet.X,
+                    [Canvas.TopProperty] = pellet.Y,
+                    [Canvas.ZIndexProperty] = pellet.Zindex
+                };
+                _gameCanvas.Children.Add(ellipse);
+                continue;
+            }
+
+            if (gameObject.Sprite == null)
             {
                 continue;
             }

@@ -10,7 +10,8 @@ namespace AvaloniaApplication1.Models
     {
         Empty = 0,
         Wall = 1,
-        Pellet = 2,
-        PowerPellet = 3
+        Point = 2,
+        PowerPoint = 3,
+        GhostDoor = 4
     }
 }

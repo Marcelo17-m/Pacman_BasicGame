@@ -22,12 +22,22 @@ namespace AvaloniaApplication1.Engine
         public List<GameObject> GameObjects { get; private set; } = new List<GameObject>();
 
         public SpriteManager SpriteManager { get; private set; } = new SpriteManager();
+        
+        public GameMap? Map { get; set; }
+
+        public event Action<int, int>? PelletEaten;
 
         private int _frameCount;
 
         private double _fpsTimer;
 
         private DateTime _lastUpdateTime;
+        public int Score { get; private set; }
+
+        private const int _pelletPoints = 10;
+
+        private int _powepelletPoints = 50;
+
 
         public GameEngine()
         {
@@ -68,6 +78,8 @@ namespace AvaloniaApplication1.Engine
                 obj.Update(diff);
 
             }
+
+            CheckPelletCollision();
         }
 
         public void AddGameObject(GameObject obj)
@@ -84,5 +96,72 @@ namespace AvaloniaApplication1.Engine
         {
 
         }
+
+        public void CheckPelletCollision()
+        {
+            if (Map == null) return;
+
+            var pacman = GameObjects.OfType<Pacman>().FirstOrDefault();
+            if (pacman == null) return;
+
+            //obtener celda del pacman
+            var (row, col) = Map.WorldToTile(pacman.X + pacman.Width /2,
+                pacman.Y + pacman.Height /2);
+
+            //buscar las pildoras de la celda
+            var pelletsToEat = GameObjects.OfType<Pellet>()
+                .Where(p => p.IsActive)
+                .ToList();
+
+            foreach (var pellet in pelletsToEat)
+            {
+                //obtener la celda
+                var (pelletRow, pelletCol) = Map.WorldToTile(
+                pellet.X + pellet.Width / 2,
+                pellet.Y + pellet.Height / 2
+            );
+
+                // si estan en la misma celda
+                if (pelletRow == row && pelletCol == col)
+                {
+                    pellet.IsActive = false;
+
+                    if (pellet.IsEnergizer)
+                    {
+                        Score += _powepelletPoints;
+                        //luego agregar el modo matar fantasmas
+                    }
+                    else
+                    {
+                        Score += _pelletPoints;
+                        //se come una normal
+                    }
+
+                    Map.SetTile(row, col, MapTileType.Empty);
+                }
+            }
+        }
+
+        public void CreatePellets()
+        {
+            if (Map == null) return;
+
+            var pointPoisitions = Map.GetTilesOfType(MapTileType.Point);
+            foreach (var (row, col) in pointPoisitions)
+            {
+                var (x, y) = Map.TileToWorld(row, col);
+                var pellet = new Pellet(x, y, isEnergizer: false);
+                AddGameObject(pellet);
+            }
+
+            var powerPositions = Map.GetTilesOfType(MapTileType.PowerPoint);
+            foreach (var (row, col) in powerPositions)
+            {
+                var (x, y) = Map.TileToWorld(row, col);
+                var pellet = new Pellet(x, y, isEnergizer: true);
+                AddGameObject(pellet);
+            }
+        }
+
     }
 }
