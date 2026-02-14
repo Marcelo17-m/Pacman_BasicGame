@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace AvaloniaApplication1.Models
         public bool IsActive { get; set; } = true;
 
         public double Bounds;
+        public IBrush? FillColor { get; set; }
 
 
         //deltatime es el tiempo desde el ultimo frame
