@@ -15,6 +15,29 @@
             Height="450"
             Background="{DynamicResource PrimaryBackGround}"
             Focusable="True"/>
+
+      <StackPanel HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Margin="20,10">
+      
+      <TextBlock Text="{Binding Score, StringFormat='SCORE:   {0}'}" 
+                 FontSize="24" 
+                 FontWeight="Bold"
+                 Foreground="Yellow"
+                 /> 
+      
+      <TextBlock Text="{Binding ElapsedTime, StringFormat='TIME: {0}'}" 
+                 FontSize="16" 
+                 Foreground="White"
+                 Margin="5"/>
+      
+          <!-- agregar un futuro FontFamily para cambiar el estilo de letra -->
+      <TextBlock Text="{Binding CurrentFPS, StringFormat='FPS: {0}'}" 
+                 FontSize="14" 
+                 Foreground="Gray"
+                 Margin="5"/>
+    </StackPanel>
+
     
     <Button Command="{Binding BackCommand}"
             Content="Back"
@@ -23,6 +46,6 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Margin="5"/>
-            
+      
   </Grid>
 </UserControl>

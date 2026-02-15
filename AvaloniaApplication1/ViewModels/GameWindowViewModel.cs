@@ -32,6 +32,9 @@ namespace AvaloniaApplication1.ViewModels
         private DispatcherTimer _gameLoopTimer;
         private Pacman? _pacman;
 
+        [ObservableProperty]
+        private int _score;
+
         public ObservableCollection<GameObject> GameObjects { get; private set; } = new ObservableCollection<GameObject>();
         public GameWindowViewModel(MainWindowViewModel main)
         {
@@ -56,6 +59,7 @@ namespace AvaloniaApplication1.ViewModels
             _gameEngine.Update();
             ElapsedTime = $"{_gameEngine.TotalTime:F1}s";
             CurrentFPS = _gameEngine.CurrentFPS;
+            Score = _gameEngine.Score;
             
             // Actualizar la colección observable con los objetos del juego
             GameObjects.Clear();

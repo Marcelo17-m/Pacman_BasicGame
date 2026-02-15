@@ -38,7 +38,6 @@ namespace AvaloniaApplication1.Engine
 
         private int _powepelletPoints = 50;
 
-
         public GameEngine()
         {
             _lastUpdateTime = DateTime.Now;
