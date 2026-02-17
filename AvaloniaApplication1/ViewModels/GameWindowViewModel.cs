@@ -22,20 +22,19 @@ namespace AvaloniaApplication1.ViewModels
     {
         private readonly MainWindowViewModel _main;
 
+        //manejar el scoreboard que se muestre llamando su viewmodel
         [ObservableProperty]
-        private int _currentFPS;
+        private ScoreboardWindowViewModel _scoreBoard = new();
 
-        [ObservableProperty]
-        private string _elapsedTime;
+        // coleccion de viewmodels para los objetos del juego
+        public ObservableCollection<GameObjectViewModel> GameObjects { get; } = new();
 
         private GameEngine _gameEngine;
         private DispatcherTimer _gameLoopTimer;
         private Pacman? _pacman;
 
-        [ObservableProperty]
-        private int _score;
-
-        public ObservableCollection<GameObject> GameObjects { get; private set; } = new ObservableCollection<GameObject>();
+        // Mapeo Model -> ViewModel
+        private readonly Dictionary<GameObject, GameObjectViewModel> _viewModelMap = new();
         public GameWindowViewModel(MainWindowViewModel main)
         {
             _main = main;
@@ -45,33 +44,50 @@ namespace AvaloniaApplication1.ViewModels
                 Interval = TimeSpan.FromMilliseconds(GameEngine.TargetFrameMS) // 60 FPS == 16,67 ms
             };
 
-            _elapsedTime = "0.0s";
-
             _gameLoopTimer.Tick += GameLoopTimerTick;
 
             StartGame();
-
             StartGameLoop();
         }
 
         private void GameLoopTimerTick(object? sender, EventArgs e)
         {
+            //actualizar el engine cada momento para hacer validaciones
             _gameEngine.Update();
-            ElapsedTime = $"{_gameEngine.TotalTime:F1}s";
-            CurrentFPS = _gameEngine.CurrentFPS;
-            Score = _gameEngine.Score;
-            
-            // Actualizar la colección observable con los objetos del juego
-            GameObjects.Clear();
-            foreach (var obj in _gameEngine.GameObjects)
-            {
-                GameObjects.Add(obj);
-            }
-        } 
 
-        public void StartGameLoop()
+            //sincronizar el scoreboard
+            ScoreBoard.UpdateFromEngine(_gameEngine);
+
+            //sincronizar si se agrega o elimina un objeto
+            SyncGameObjects();
+        }
+
+        private void SyncGameObjects()
         {
-            _gameLoopTimer.Start();
+            foreach (var gameObject in _gameEngine.GameObjects)
+            {
+                if (!_viewModelMap.ContainsKey(gameObject))
+                {
+                    var vm = new GameObjectViewModel(gameObject);
+                    _viewModelMap[gameObject] = vm;
+                    GameObjects.Add(vm);
+                }
+            }
+
+            foreach (var vm in GameObjects)
+            {
+                vm.SyncFromModel();
+            }
+
+            for (int i = GameObjects.Count - 1; i >= 0; i--)
+            {
+                if (!GameObjects[i].IsActive)
+                {
+                    var vm = GameObjects[i];
+                    _viewModelMap.Remove(vm.Model);
+                    GameObjects.RemoveAt(i);
+                }
+            }
         }
 
         public void StartGame()
@@ -95,11 +111,7 @@ namespace AvaloniaApplication1.ViewModels
 
             _gameEngine.CreatePellets(); //crear los puntos y power ups
 
-            GameObjects.Clear();
-            foreach (var obj in _gameEngine.GameObjects)
-            {
-                GameObjects.Add(obj);
-            }
+            SyncGameObjects();
         }
         
         public void HandleKeyPress(Avalonia.Input.Key key)
@@ -126,7 +138,10 @@ namespace AvaloniaApplication1.ViewModels
                     break;
             }
         }
-
+        public void StartGameLoop()
+        {
+            _gameLoopTimer.Start();
+        }
 
         [RelayCommand]
         private void Back()

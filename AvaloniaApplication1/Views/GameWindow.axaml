@@ -1,51 +1,118 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:AvaloniaApplication1.ViewModels"
+        xmlns:converters="using:AvaloniaApplication1.Engine"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="650"
         x:Class="AvaloniaApplication1.GameWindow"
         x:DataType="vm:GameWindowViewModel"
         Focusable="True">
+
+
+      <!-- Esto es un extra que convierte cualquier objeto en un booleano para mostrar si es visible -->
+  <UserControl.Resources>
+    <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+    <converters:SpriteCropConverter x:Key="SpriteCropConverter"/>
+  </UserControl.Resources>
   
-  <Grid Width="1000" Height="650">
-    
-    <Canvas x:Name="GameCanvas"
+  <Canvas Width="1000" Height="650">
+
+      <Border Width="1000"
+              Height="650"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Background="{DynamicResource PrimaryBackGround}"/>
+
+        <!-- x:CompileBindings="False" evita que el Style use GameWindowViewModel como tipo de DataContext -->
+        <ItemsControl x:Name="GameObjectsHost"
+                      Classes="GameObjectsHost"
+                      x:CompileBindings="False"
+                      ItemsSource="{Binding GameObjects}"
+                      Width="1000"
+                      Height="650"
+                      Canvas.Left="100"
+                      Canvas.Top="100"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<Canvas Width="1000" Height="650"/>
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<!-- Posicionar cada ítem en el Canvas según X,Y del modelo (ContentPresenter = hijo del Canvas) -->
+			<ItemsControl.Styles>
+				<Style Selector="ItemsControl.GameObjectsHost ContentPresenter">
+					<Setter Property="Canvas.Left" Value="{Binding DataContext.X, RelativeSource={RelativeSource Mode=Self}}"/>
+					<Setter Property="Canvas.Top" Value="{Binding DataContext.Y, RelativeSource={RelativeSource Mode=Self}}"/>
+					<Setter Property="Canvas.ZIndex" Value="{Binding DataContext.Zindex, RelativeSource={RelativeSource Mode=Self}}"/>
+				</Style>
+			</ItemsControl.Styles>
+
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Panel Width="{Binding Width}"
+					       Height="{Binding Height}">
+						<Ellipse Width="{Binding Width}"
+						         Height="{Binding Height}"
+						         Fill="{Binding FillColor}"
+						         IsVisible="{Binding FillColor, Converter={StaticResource IsNotNullConverter}}"/>
+						<Image Width="{Binding Width}"
+						       Height="{Binding Height}"
+						       IsVisible="{Binding Sprite, Converter={StaticResource IsNotNullConverter}}"
+						       RenderOptions.BitmapInterpolationMode="None">
+							<Image.Source>
+								<MultiBinding Converter="{StaticResource SpriteCropConverter}">
+									<Binding Path="Sprite"/>
+									<Binding Path="SourceRect"/>
+								</MultiBinding>
+							</Image.Source>
+						</Image>
+					</Panel>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+
+       <!-- Canvas solo para capturar KeyDown -->
+      <Canvas x:Name="GameCanvas"
             Width="800"
             Height="450"
-            Background="{DynamicResource PrimaryBackGround}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Background="Transparent"
             Focusable="True"/>
 
+       <!-- UI el score, FPS, tiempo y boton para volver. -->
       <StackPanel HorizontalAlignment="Left" 
                 VerticalAlignment="Top" 
                 Margin="20,10">
       
-      <TextBlock Text="{Binding Score, StringFormat='SCORE:   {0}'}" 
+      <TextBlock Text="{Binding ScoreBoard.Score, StringFormat='SCORE:   {0}'}" 
                  FontSize="24" 
                  FontWeight="Bold"
                  Foreground="Yellow"
                  /> 
       
-      <TextBlock Text="{Binding ElapsedTime, StringFormat='TIME: {0}'}" 
+      <TextBlock Text="{Binding ScoreBoard.ElapsedTime, StringFormat='TIME: {0}'}" 
                  FontSize="16" 
                  Foreground="White"
                  Margin="5"/>
       
           <!-- agregar un futuro FontFamily para cambiar el estilo de letra -->
-      <TextBlock Text="{Binding CurrentFPS, StringFormat='FPS: {0}'}" 
+      <TextBlock Text="{Binding ScoreBoard.CurrentFPS, StringFormat='FPS: {0}'}" 
                  FontSize="14" 
                  Foreground="Gray"
                  Margin="5"/>
     </StackPanel>
 
-    
     <Button Command="{Binding BackCommand}"
             Content="Back"
             Classes="MenuButton"
             Width="80"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top"
+            Canvas.Top="30"
+            Canvas.Left="900"
             Margin="5"/>
-      
-  </Grid>
+
+  </Canvas>
 </UserControl>
