@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using AvaloniaApplication1.ViewModels;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
@@ -10,72 +11,17 @@ using System.Threading.Tasks;
 
 namespace AvaloniaApplication1.Models
 {
-    public partial class GameObject : ObservableObject
+    public partial class GameObject 
     {
-        private double _x;
-        private double _y;
-        private double _width;
-        private double _height;
-        private int _zindex;
-        private Bitmap? _sprite;
-        private Rect? _sourceRect;
-        private bool _isActive = true;
-        private IBrush? _fillColor;
-
-        public double X
-        {
-            get => _x;
-            set => SetProperty(ref _x, value);
-        }
-
-        public double Y
-        {
-            get => _y;
-            set => SetProperty(ref _y, value);
-        }
-
-        public double Width
-        {
-            get => _width;
-            set => SetProperty(ref _width, value);
-        }
-
-        public double Height
-        {
-            get => _height;
-            set => SetProperty(ref _height, value);
-        }
-
-        public int Zindex
-        {
-            get => _zindex;
-            set => SetProperty(ref _zindex, value);
-        }
-
-        public Bitmap? Sprite
-        {
-            get => _sprite;
-            set => SetProperty(ref _sprite, value);
-        }
-
-        public Rect? SourceRect
-        {
-            get => _sourceRect;
-            set => SetProperty(ref _sourceRect, value);
-        }
-
-        public bool IsActive
-        {
-            get => _isActive;
-            set => SetProperty(ref _isActive, value);
-        }
-
-        public IBrush? FillColor
-        {
-            get => _fillColor;
-            set => SetProperty(ref _fillColor, value);
-        }
-
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Width { get; set; }
+        public double Height { get; set; }
+        public int Zindex { get; set; }
+        public Bitmap? Sprite { get; set; }
+        public Rect? SourceRect { get; set; }
+        public bool IsActive { get; set; } = true;
+        public IBrush? FillColor { get; set; }
 
         //deltatime es el tiempo desde el ultimo frame
         public virtual void Update(double deltaTime)
