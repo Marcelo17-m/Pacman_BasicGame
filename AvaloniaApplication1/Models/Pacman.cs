@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace AvaloniaApplication1.Models
 {
-    internal class Pacman : GameObject
+    public class Pacman : GameObject
     {
         private readonly GameMap? _map;
         public enum PacmanDirection
@@ -41,7 +41,7 @@ namespace AvaloniaApplication1.Models
         {
             if (Sprite == null)
             {
-                SourceRect = null;
+                SourceRect = new Avalonia.Rect(0, 0, 0, 0);
                 return; 
             }
             
