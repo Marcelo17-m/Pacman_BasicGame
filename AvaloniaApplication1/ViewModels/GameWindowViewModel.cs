@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using AvaloniaApplication1.Engine;
 using AvaloniaApplication1.Models;
@@ -25,6 +26,9 @@ namespace AvaloniaApplication1.ViewModels
         //manejar el scoreboard que se muestre llamando su viewmodel
         [ObservableProperty]
         private ScoreboardWindowViewModel _scoreBoard = new();
+
+        [ObservableProperty]
+        private Bitmap? _mapImage;
 
         // coleccion de viewmodels para los objetos del juego
         public ObservableCollection<GameObjectViewModel> GameObjects { get; } = new();
@@ -98,6 +102,12 @@ namespace AvaloniaApplication1.ViewModels
             if (pacmanSprite == null)
             {
                 Console.WriteLine("Failed Sprite");
+                return;
+            }
+
+            MapImage = _gameEngine.SpriteManager.LoadSprite("PacmanMap1.png");
+            if (MapImage == null)
+            {
                 return;
             }
 

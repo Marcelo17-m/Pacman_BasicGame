@@ -22,7 +22,15 @@
               Height="650"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              Background="{DynamicResource PrimaryBackGround}"/>
+              Background="{DynamicResource PrimaryBackGround}"
+              />
+
+      <Image Source="{Binding MapImage}"
+             Width="800"
+             Height="485"
+             Canvas.Left="-75"
+             Canvas.Top="105"/>
+
 
         <!-- x:CompileBindings="False" evita que el Style use GameWindowViewModel como tipo de DataContext -->
         <ItemsControl x:Name="GameObjectsHost"
