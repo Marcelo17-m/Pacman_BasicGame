@@ -163,34 +163,6 @@ namespace AvaloniaApplication1.Models.Ghosts
 
         }
 
-        private void AllignToGrid(PacmanDirection newDirection)
-        {
-            if (_map == null) return;
-
-            double centerX = X + Width / 2;
-            double centerY = Y + Height / 2;
-
-            var (row, col) = _map.WorldToTile(centerX, centerY);
-
-            var (tileX, tileY) = _map.TileToWorld(row, col);
-
-            double tileCenterX = tileX + _map.TileWidth / 2;
-            double tileCenterY = tileY + _map.TileHeight / 2;
-
-            switch (newDirection)
-            {
-                case PacmanDirection.Up:
-                case PacmanDirection.Down:
-                    X = tileCenterX - Width / 2;
-                    break;
-
-                case PacmanDirection.Left:
-                case PacmanDirection.Right:
-                    Y = tileCenterY - Height / 2;
-                    break;
-            }
-        }
-
         public void DecideNextMove(Pacman pacman, List<Ghost>? allGhost = null)
         {
             if (_map == null || IsDead || IsEatable)
