@@ -14,10 +14,6 @@ namespace AvaloniaApplication1.Models
         public int Columns { get; } //cantidad de columnas
         public int Rows { get; } //cantidad de filas
 
-        public int WidthPx => Columns * TileWidth;
-
-        public int HeightPx => Rows * TileHeight;
-
         private readonly MapTileType[,] _tiles; 
 
         public GameMap(int columns, int rows, int tileWidth = 16, int tileHeight = 16)
