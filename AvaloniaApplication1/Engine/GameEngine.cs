@@ -1,4 +1,5 @@
 using AvaloniaApplication1.Models;
+using AvaloniaApplication1.Models.Ghosts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +63,19 @@ namespace AvaloniaApplication1.Engine
                 CurrentFPS = _frameCount;
                 _frameCount = 0;
                 _fpsTimer = 0;
+            }
+
+            //actualizar la IA del fantasma
+            var pacman = GameObjects.OfType<Pacman>().FirstOrDefault();
+            var ghosts = GameObjects.OfType<Ghost>().ToList();
+
+            if (pacman != null && ghosts.Count > 0)
+            {
+                foreach (var ghost in ghosts)
+                {
+                        ghost.DecideNextMove(pacman, ghosts);
+                }
+                
             }
 
             for (int i = GameObjects.Count - 1; i >= 0; i--)

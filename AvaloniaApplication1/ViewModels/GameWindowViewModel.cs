@@ -7,6 +7,9 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using AvaloniaApplication1.Engine;
 using AvaloniaApplication1.Models;
+using AvaloniaApplication1.Models.Ghosts;
+using AvaloniaApplication1.Models.Ghosts.Behavior;
+using AvaloniaApplication1.Models.Ghosts.Ghosts;
 using AvaloniaApplication1.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -36,6 +39,10 @@ namespace AvaloniaApplication1.ViewModels
         private GameEngine _gameEngine;
         private DispatcherTimer _gameLoopTimer;
         private Pacman? _pacman;
+        private Ghost? _ghostBlinky;
+        private Ghost? _ghostPinky;
+        private Ghost? _ghostInky;
+        private Ghost? _ghostClyde;
 
         // Mapeo Model -> ViewModel
         private readonly Dictionary<GameObject, GameObjectViewModel> _viewModelMap = new();
@@ -99,7 +106,9 @@ namespace AvaloniaApplication1.ViewModels
             _gameEngine.Map = GameMap.CreateFromLayout(PacmanMaps.ClassicMap, tileSize: 16);
 
             var pacmanSprite = _gameEngine.SpriteManager.LoadSprite("PacmanViewsFinal.png");
-            if (pacmanSprite == null)
+            var ghostSprite = _gameEngine.SpriteManager.LoadSprite("GhostsViews.png");
+
+            if (pacmanSprite == null || ghostSprite == null)
             {
                 Console.WriteLine("Failed Sprite");
                 return;
@@ -115,9 +124,23 @@ namespace AvaloniaApplication1.ViewModels
             //centrar el pacman en la celda que es 16x16 y el pacman 14x14 
             //double centeredX = startPos.x + (16 -14) / 2; 
             //double centeredY = startPos.y + (16 - 14) / 2;
-            _pacman = new Pacman(startPos.x + 1, startPos.y + 1, pacmanSprite, _gameEngine.Map, spriteSize: 16);
+            IGhostBehavior ghostBehavior = new BlinkyBehavior();
+            _pacman = new Pacman(startPos.x + 1, startPos.y + 1, pacmanSprite, _gameEngine.Map, spriteSize: 16);//pacman
             _pacman.SetNextDirection(Pacman.PacmanDirection.Right);
             _gameEngine.AddGameObject(_pacman);
+
+            var ghostHomePos = _gameEngine.Map.TileToWorld(10, 12);
+            var ghostHomePos2 = _gameEngine.Map.TileToWorld(11, 13);
+            var ghostHomePos3 = _gameEngine.Map.TileToWorld(11, 14);
+            var ghostHomePos4 = _gameEngine.Map.TileToWorld(10, 15);
+            _ghostBlinky = new Ghost(ghostHomePos.x +1, ghostHomePos.y +1, type: GhostType.Blinky, behavior: new BlinkyBehavior(), ghostSprite, _gameEngine.Map);
+            _gameEngine.AddGameObject(_ghostBlinky);
+            _ghostPinky = new Ghost(ghostHomePos2.x +1, ghostHomePos2.y +1, type: GhostType.Pinky, behavior: new PinkyBehavior(), ghostSprite, _gameEngine.Map);
+            _gameEngine.AddGameObject(_ghostPinky);
+            _ghostInky = new Ghost(ghostHomePos3.x + 1, ghostHomePos3.y + 1, type: GhostType.Inky, behavior: new InkyBehavior(), ghostSprite, _gameEngine.Map);
+            _gameEngine.AddGameObject(_ghostInky);
+            _ghostClyde = new Ghost(ghostHomePos4.x + 1, ghostHomePos4.y + 1, type: GhostType.Clyde, behavior: new ClydeBehavior(), ghostSprite, _gameEngine.Map);
+            _gameEngine.AddGameObject(_ghostClyde);
 
             _gameEngine.CreatePellets(); //crear los puntos y power ups
 
