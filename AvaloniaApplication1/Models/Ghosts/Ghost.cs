@@ -29,8 +29,8 @@ namespace AvaloniaApplication1.Models.Ghosts
             _behavior = behavior;
             _map = map;
             _spriteSize = spriteSize;
-            Width = spriteSize - 1.5;
-            Height = spriteSize - 1.5; // por si acaso para que no gire mal
+            Width = spriteSize - 1;
+            Height = spriteSize - 1; // por si acaso para que no gire mal
             Zindex = 5; // uno menos que el pacman
             Sprite = sprite;
 
