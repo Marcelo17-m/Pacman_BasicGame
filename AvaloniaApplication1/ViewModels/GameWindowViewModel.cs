@@ -120,12 +120,12 @@ namespace AvaloniaApplication1.ViewModels
                 return;
             }
 
-            var startPos = _gameEngine.Map.TileToWorld(1, 15);
+            var startPos = _gameEngine.Map.TileToWorld(29, 2); 
             //centrar el pacman en la celda que es 16x16 y el pacman 14x14 
-            //double centeredX = startPos.x + (16 -14) / 2; 
-            //double centeredY = startPos.y + (16 - 14) / 2;
+            //double centeredX = startPos.x + (16 -14.5) / 2; 
+            //double centeredY = startPos.y + (16 - 14.5) / 2;
             IGhostBehavior ghostBehavior = new BlinkyBehavior();
-            _pacman = new Pacman(startPos.x + 1, startPos.y + 1, pacmanSprite, _gameEngine.Map, spriteSize: 16);//pacman
+            _pacman = new Pacman(startPos.x + 0.75, startPos.y + 0.75, pacmanSprite, _gameEngine.Map, spriteSize: 16);//pacman
             _pacman.SetNextDirection(Pacman.PacmanDirection.Right);
             _gameEngine.AddGameObject(_pacman);
 
@@ -133,13 +133,13 @@ namespace AvaloniaApplication1.ViewModels
             var ghostHomePos2 = _gameEngine.Map.TileToWorld(11, 13);
             var ghostHomePos3 = _gameEngine.Map.TileToWorld(11, 14);
             var ghostHomePos4 = _gameEngine.Map.TileToWorld(10, 15);
-            _ghostBlinky = new Ghost(ghostHomePos.x +1, ghostHomePos.y +1, type: GhostType.Blinky, behavior: new BlinkyBehavior(), ghostSprite, _gameEngine.Map);
+            _ghostBlinky = new Ghost(ghostHomePos.x +0.5, ghostHomePos.y +0.5, type: GhostType.Blinky, behavior: new BlinkyBehavior(), ghostSprite, _gameEngine.Map);
             _gameEngine.AddGameObject(_ghostBlinky);
-            _ghostPinky = new Ghost(ghostHomePos2.x +1, ghostHomePos2.y +1, type: GhostType.Pinky, behavior: new PinkyBehavior(), ghostSprite, _gameEngine.Map);
+            _ghostPinky = new Ghost(ghostHomePos2.x +0.5, ghostHomePos2.y +0.5, type: GhostType.Pinky, behavior: new PinkyBehavior(), ghostSprite, _gameEngine.Map);
             _gameEngine.AddGameObject(_ghostPinky);
-            _ghostInky = new Ghost(ghostHomePos3.x + 1, ghostHomePos3.y + 1, type: GhostType.Inky, behavior: new InkyBehavior(), ghostSprite, _gameEngine.Map);
+            _ghostInky = new Ghost(ghostHomePos3.x + 0.5, ghostHomePos3.y + 0.5, type: GhostType.Inky, behavior: new InkyBehavior(), ghostSprite, _gameEngine.Map);
             _gameEngine.AddGameObject(_ghostInky);
-            _ghostClyde = new Ghost(ghostHomePos4.x + 1, ghostHomePos4.y + 1, type: GhostType.Clyde, behavior: new ClydeBehavior(), ghostSprite, _gameEngine.Map);
+            _ghostClyde = new Ghost(ghostHomePos4.x + 0.5, ghostHomePos4.y + 0.5, type: GhostType.Clyde, behavior: new ClydeBehavior(), ghostSprite, _gameEngine.Map);
             _gameEngine.AddGameObject(_ghostClyde);
 
             _gameEngine.CreatePellets(); //crear los puntos y power ups
