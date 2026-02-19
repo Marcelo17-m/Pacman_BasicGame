@@ -19,11 +19,15 @@ namespace AvaloniaApplication1.ViewModels
         [ObservableProperty]
         private int _currentFPS;
 
+        [ObservableProperty]
+        private int _lives = 3;
+
         public void UpdateFromEngine(GameEngine engine)
         {
             Score = engine.Score;
             ElapsedTime = $"{engine.TotalTime:F1}s";
             CurrentFPS = engine.CurrentFPS;
+            Lives = engine.Lives;
         }
     }
 }

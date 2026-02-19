@@ -101,6 +101,12 @@
                  FontWeight="Bold"
                  Foreground="Yellow"
                  /> 
+
+      <TextBlock Text="{Binding ScoreBoard.Lives, StringFormat='LIVES: {0}'}" 
+                 FontSize="20" 
+                 FontWeight="Bold" 
+                 Foreground="Red" 
+                 Margin="0,5,0,0"/>
       
       <TextBlock Text="{Binding ScoreBoard.ElapsedTime, StringFormat='TIME: {0}'}" 
                  FontSize="16" 
