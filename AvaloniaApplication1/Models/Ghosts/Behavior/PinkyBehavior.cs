@@ -40,7 +40,10 @@ namespace AvaloniaApplication1.Models.Ghosts.Behavior
 
             foreach (GhostDirection dir in Enum.GetValues<GhostDirection>())
             {
-                if (IsOpposite(dir, ghost.Direction)) continue;
+                if (IsOpposite(dir, ghost.Direction))
+                {
+                    continue;
+                }
 
                 double testX = ghost.X;
                 double testY = ghost.Y;
