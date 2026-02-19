@@ -16,17 +16,30 @@ namespace AvaloniaApplication1.Models
             Up, Down, Left, Right
         }
 
+        public enum PacmanState
+        {
+            Normal, Dying, Dead, Invincible
+        }
+
         public PacmanDirection Direction { get; set; } = PacmanDirection.Up;
         public PacmanDirection? NextDirection { get; set; } = null;
+        public PacmanState State { get; set; } = PacmanState.Normal;
 
         public double Speed { get; set; } = 60.0; //basicamente los fps
 
-        private readonly int _spriteSize;
+        private int _spriteSize { get; set; }
+        private double _stateTimer = 0; //time para controlar estados
+
+        // posicion inicial para respawnear
+        public double SpawnX { get; set; }
+        public double SpawnY { get; set; }
 
         public Pacman(double x, double y, Bitmap? sprite = null, GameMap? map = null, int spriteSize = 16)
         {
             X = x;
             Y = y;
+            SpawnX = x;
+            SpawnY = y;
             _map = map;
             _spriteSize = spriteSize;
             Width = spriteSize - 1.5;
@@ -83,6 +96,19 @@ namespace AvaloniaApplication1.Models
             base.Update(deltaTime);
 
             if (_map == null) return;
+
+            switch (State)
+            {
+                case PacmanState.Dying:
+                    UpdateDyingState(deltaTime);
+                    return;
+                case PacmanState.Dead:
+                    UpdateDeadState(deltaTime);
+                    return;
+                case PacmanState.Invincible:
+                    UpdateInvincibleState(deltaTime);
+                    break;
+            }
 
             // Mover el Pacman según su dirección y velocidad   
             double moveDistance = Speed * deltaTime;
@@ -147,6 +173,71 @@ namespace AvaloniaApplication1.Models
                 Y = newY;
             }
         }
+
+        private void UpdateDyingState(double deltatime)
+        {
+            _stateTimer += deltatime;
+
+            if (_stateTimer >= 2.0)
+            {
+                State = PacmanState.Dead;
+                _stateTimer = 0;
+                // desaparecerlo momentanamente
+                _spriteSize = 0;
+                Width = 0;
+                Height = 0;
+            }
+        }
+
+        private void UpdateDeadState(double deltatime)
+        {
+            _stateTimer += deltatime;
+
+            if ( _stateTimer >= 3.0)
+            {
+                Respawn();
+            }
+        }
+
+        private void UpdateInvincibleState(double deltatime)
+        {
+            _stateTimer += deltatime;
+
+            if (_stateTimer >= 2.0)
+            {
+                State = PacmanState.Normal;
+                _stateTimer = 0;
+            }
+        }
+
+        public void Die()
+        {
+            if (State == PacmanState.Dead || State == PacmanState.Dying)
+            {
+                return;
+            }
+
+            State = PacmanState.Dying;
+            _stateTimer = 0;
+            Speed = 0;
+        }
+
+        public void Respawn()
+        {
+            X = SpawnX;
+            Y = SpawnY;
+            Direction = PacmanDirection.Right;
+            NextDirection = null;
+            Speed = 60.0;
+            State = PacmanState.Invincible;
+            _stateTimer = 0;
+            _spriteSize = 16;
+            Width = _spriteSize - 1.5;
+            Height = _spriteSize - 1.5;
+
+            UpdateSpriteRect();
+        }
+
 
         private void AllignToGrid(PacmanDirection newDirection)
         {

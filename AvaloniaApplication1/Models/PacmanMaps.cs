@@ -9,7 +9,7 @@ namespace AvaloniaApplication1.Models
     public static class PacmanMaps
     {
         public static readonly string[] ClassicMap =
-        {
+        { // 28 columnas y 31 filas
         "############################",
         "#............##............#",
         "#.####.#####.##.#####.####.#",
@@ -24,7 +24,7 @@ namespace AvaloniaApplication1.Models
         "     #.##..........##.#     ",
         "     #.##.###--###.##.#     ",
         "######.##.#      #.##.######",
-        "#     ....#      #....     #",
+        "     #....#      #....#     ",
         "######.##.#      #.##.######",
         "     #.##.########.##.#     ",
         "     #.##..........##.#     ",
