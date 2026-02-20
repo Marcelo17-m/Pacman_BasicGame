@@ -98,19 +98,19 @@ namespace AvaloniaApplication1.Models.Ghosts
             switch (Direction)
             {
                 case GhostDirection.Right:
-                    spriteX = 0 * _spriteSize; // Primer frame
+                    spriteX = (_animationFrame % 2 == 0) ? 0 * _spriteSize : 1 * _spriteSize; // Primer frame  0 * _spriteSize;
                     break;
 
                 case GhostDirection.Left:
-                    spriteX = 2 * _spriteSize; // Segundo frame
+                    spriteX = (_animationFrame % 2 == 0) ? 2 * _spriteSize : 3 * _spriteSize; // Segundo frame  2 * _spriteSize;
                     break;
 
                 case GhostDirection.Up:
-                    spriteX = 4 * _spriteSize; // Tercer frame
+                    spriteX = (_animationFrame % 2 == 0) ? 4 * _spriteSize : 5 * _spriteSize; // Tercer frame  4 * _spriteSize;
                     break;
 
                 case GhostDirection.Down:
-                    spriteX = 6 * _spriteSize; // Cuarto frame
+                    spriteX = (_animationFrame % 2 == 0) ? 6 * _spriteSize : 7 * _spriteSize; // Cuarto frame  6 * _spriteSize;
                     break;
                 default:
                     spriteX = 1;

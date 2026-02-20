@@ -27,6 +27,8 @@ namespace AvaloniaApplication1.Models
 
         public double Speed { get; set; } = 60.0; //basicamente los fps
 
+        private int _animationFrame = 0; // talvez añadir a gameObject
+        private int _animationCounter = 0;
         private int _spriteSize { get; set; }
         private double _stateTimer = 0; //time para controlar estados
 
@@ -57,8 +59,8 @@ namespace AvaloniaApplication1.Models
                 SourceRect = new Avalonia.Rect(0, 0, 0, 0);
                 return; 
             }
-            
-            int spriteX = 16;
+
+            int spriteX = _animationFrame * _spriteSize;
             int spriteY = 0; // Si los sprites están en múltiples filas, ajusta este valor
 
             switch (Direction)
@@ -96,6 +98,14 @@ namespace AvaloniaApplication1.Models
             base.Update(deltaTime);
 
             if (_map == null) return;
+
+            _animationCounter++;
+            if (_animationCounter >= 6) // cada 6 frames
+            {
+                _animationCounter = 0;
+                _animationFrame = (_animationFrame == 0) ? 1 : 0; // Alterna entre 0 y 1
+                UpdateSpriteRect();
+            }
 
             switch (State)
             {
