@@ -91,7 +91,7 @@
             Background="Transparent"
             Focusable="True"/>
 
-       <!-- UI el score, FPS, tiempo y boton para volver. -->
+       <!-- UI el score, FPS, tiempo, Vidas y boton para volver. -->
       <StackPanel HorizontalAlignment="Left" 
                 VerticalAlignment="Top" 
                 Margin="20,10">
@@ -118,6 +118,17 @@
                  FontSize="14" 
                  Foreground="Gray"
                  Margin="5"/>
+
+          <!-- GameOverText oculto -->
+      <TextBlock Text="{Binding GameOverText}"
+                 FontSize="80"
+                 Foreground="DarkRed"
+                 FontWeight="ExtraBold"
+                 FontFamily="Console"
+                 Canvas.Left="50"
+                 Canvas.Top="50"
+                 IsVisible="{Binding IsGameOverVisible}"/>
+
     </StackPanel>
 
     <Button Command="{Binding BackCommand}"

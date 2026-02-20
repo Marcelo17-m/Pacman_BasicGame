@@ -33,9 +33,16 @@ namespace AvaloniaApplication1.ViewModels
         [ObservableProperty]
         private Bitmap? _mapImage;
 
+        [ObservableProperty]
+        private string _gameOverText = "";
+
+        [ObservableProperty]
+        private bool _isGameOverVisible = false;
+
         // coleccion de viewmodels para los objetos del juego
         public ObservableCollection<GameObjectViewModel> GameObjects { get; } = new();
 
+        SoundManager SoundManager = new();
         private GameEngine _gameEngine;
         private DispatcherTimer _gameLoopTimer;
         private Pacman? _pacman;
@@ -50,6 +57,10 @@ namespace AvaloniaApplication1.ViewModels
         {
             _main = main;
             _gameEngine = new GameEngine();
+
+            _gameEngine.PacmanDied += OnPacmanDied;
+            _gameEngine.GameOver += OnGameOver;
+
             _gameLoopTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromMilliseconds(GameEngine.TargetFrameMS) // 60 FPS == 16,67 ms
@@ -174,6 +185,22 @@ namespace AvaloniaApplication1.ViewModels
         public void StartGameLoop()
         {
             _gameLoopTimer.Start();
+        }
+
+        private void OnPacmanDied()
+        {
+            //ponerle un sonido de muerte
+            string pacmanDyingAudio = "PacmanDeathSound";
+            SoundManager.PlaySound(pacmanDyingAudio);
+        }
+
+        private void OnGameOver()
+        {
+            GameOverText = "GAME OVER!!!";
+            IsGameOverVisible = true;
+            _gameLoopTimer.Stop();
+            string gameOverAudio = "GameOverSound";
+            SoundManager.PlaySound(gameOverAudio);
         }
 
         [RelayCommand]
