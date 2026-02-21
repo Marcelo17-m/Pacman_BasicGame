@@ -4,7 +4,7 @@ using Avalonia.Markup.Xaml;
 
 namespace AvaloniaApplication1;
 
-public partial class ScoreboardWindow : Window
+public partial class ScoreboardWindow : UserControl
 {
     public ScoreboardWindow()
     {
