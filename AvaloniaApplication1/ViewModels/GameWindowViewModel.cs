@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Documents;
 using Avalonia.Controls.Shapes;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -10,6 +11,7 @@ using AvaloniaApplication1.Models;
 using AvaloniaApplication1.Models.Ghosts;
 using AvaloniaApplication1.Models.Ghosts.Behavior;
 using AvaloniaApplication1.Models.Ghosts.Ghosts;
+using AvaloniaApplication1.Models.Services;
 using AvaloniaApplication1.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -28,13 +30,28 @@ namespace AvaloniaApplication1.ViewModels
 
         //manejar el scoreboard que se muestre llamando su viewmodel
         [ObservableProperty]
-        private ScoreboardWindowViewModel _scoreBoard = new();
+        private int _score;
+
+        [ObservableProperty]
+        private string _elapsedTime = "0.0s";
+
+        [ObservableProperty]
+        private int _currentFPS;
+
+        [ObservableProperty]
+        private int _lives = 3;
 
         [ObservableProperty]
         private Bitmap? _mapImage;
 
         [ObservableProperty]
         private string _gameOverText = "";
+
+        [ObservableProperty]
+        private string _playerName = "";
+
+        [ObservableProperty]
+        private string _saveErrorMessage = "";
 
         [ObservableProperty]
         private bool _isGameOverVisible = false;
@@ -78,7 +95,10 @@ namespace AvaloniaApplication1.ViewModels
             _gameEngine.Update();
 
             //sincronizar el scoreboard
-            ScoreBoard.UpdateFromEngine(_gameEngine);
+            Score = _gameEngine.Score;
+            ElapsedTime = $"{_gameEngine.TotalTime:F1}s";
+            CurrentFPS = _gameEngine.CurrentFPS;
+            Lives = _gameEngine.Lives;
 
             //sincronizar si se agrega o elimina un objeto
             SyncGameObjects();
@@ -196,16 +216,64 @@ namespace AvaloniaApplication1.ViewModels
 
         private void OnGameOver()
         {
-            GameOverText = "GAME OVER!!!";
-            IsGameOverVisible = true;
             _gameLoopTimer.Stop();
+            GameOverText = "GAME OVER!!!";
+
+            IsGameOverVisible = true;
             string gameOverAudio = "GameOverSound";
             SoundManager.PlaySound(gameOverAudio);
+
+            //limpiarlo
+            PlayerName = "";
+            SaveErrorMessage = "";
         }
 
         [RelayCommand]
         private void Back()
         {
+            _gameLoopTimer.Stop();
+            _main.GoBackToMenu();
+        }
+
+        [RelayCommand]
+        private void SaveData()
+        {
+            // validar que tenga 3 letras
+            if (string.IsNullOrWhiteSpace(PlayerName))
+            {
+                SaveErrorMessage = "Please enter 3 initials";
+                return;
+            }
+
+            //Convertir a mayuscula y dejar 3 letras
+            string initials = PlayerName.ToUpper().Trim();
+
+            if (initials.Length != 3)
+            {
+                SaveErrorMessage = "Must be exact three letters only";
+                return;
+            }
+
+            if (!initials.All(char.IsLetter))
+            {
+                SaveErrorMessage = "Only letters allowed";
+                return;
+            }
+
+            var newScore = new Score
+            {
+                Name = initials,
+                Points = _gameEngine.Score // tomando el del scoreViewModel puede ser null
+            };
+
+            var scores = ScoreService.LoadScores();
+
+            scores?.Add(newScore);
+
+            //Save Data
+            ScoreService.SaveScore(scores);
+            SaveErrorMessage = "Score save";
+
             _main.GoBackToMenu();
         }
 

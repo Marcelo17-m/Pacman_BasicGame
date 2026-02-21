@@ -28,6 +28,13 @@ namespace AvaloniaApplication1.ViewModels
             OnPropertyChanged(nameof(IsMenuVisible));
         }
 
+        [RelayCommand]
+        public void GoScoreboard()
+        {
+            CurrentPage = new ScoreboardWindowViewModel(this);
+            OnPropertyChanged(nameof(IsMenuVisible));
+        }
+
         public void GoBackToMenu()
         {
             CurrentPage = null;
