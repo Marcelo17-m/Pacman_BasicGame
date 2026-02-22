@@ -26,6 +26,8 @@ namespace AvaloniaApplication1.Engine
         public List<GameObject> GameObjects { get; private set; } = new List<GameObject>();
 
         public SpriteManager SpriteManager { get; private set; } = new SpriteManager();
+
+        public SoundManager SoundManager { get; private set; } = new SoundManager();
         
         public GameMap? Map { get; set; }
 
@@ -48,6 +50,18 @@ namespace AvaloniaApplication1.Engine
         private const int _pelletPoints = 10; // es constante osea no se cambia
         private const int _powepelletPoints = 50;
         private const int _ghostPoints = 200;
+        private const double _cherrySpawnInterval = 30.0; // cada 30 segundos aparece
+        private double _cherrySpawnTimer = 0;// timer para cherry
+        private Cherry? _currentCherry = null; // para saber si existe
+        private readonly (int row, int col)[] _cherryPositions =
+        [
+            (1, 2), //Esquina superior izquierda
+            (29, 2), //Equina inferior izquierda
+            (2, 26), //Esquina superior derecha
+            (29, 26) //Esquina inferior derecha
+        ];
+
+        private Random _random = new Random();
 
         public GameEngine()
         {
@@ -75,6 +89,13 @@ namespace AvaloniaApplication1.Engine
                 _fpsTimer = 0;
             }
 
+            _cherrySpawnTimer += diff;
+            if ( _cherrySpawnTimer >= _cherrySpawnInterval)
+            {
+                SpawnCherry();
+                _cherrySpawnTimer = 0;
+            }
+           
             //revisar si esta asustado el fantasma
             if (_isFrightenModeActive)
             {
@@ -115,6 +136,7 @@ namespace AvaloniaApplication1.Engine
 
             CheckPelletCollision();
             CheckGhostColission();
+            CheckCherryColission();
         }
 
         public void AddGameObject(GameObject obj)
@@ -165,6 +187,7 @@ namespace AvaloniaApplication1.Engine
                 // si estan en la misma celda
                 if (pelletRow == row && pelletCol == col)
                 {
+                    SoundManager.PlaySound("pacman_chomp");
                     pellet.IsActive = false;
 
                     if (pellet.IsEnergizer)
@@ -237,7 +260,74 @@ namespace AvaloniaApplication1.Engine
                 }
             }
         }
+        public void CheckCherryColission()
+        {
+            if (Map == null)
+            {
+                return;
+            }
 
+            var pacman = GameObjects.OfType<Pacman>().FirstOrDefault();
+            if (pacman == null)
+            {
+                return; 
+            }
+
+            if (pacman.State != Pacman.PacmanState.Normal &&
+                pacman.State != Pacman.PacmanState.Invincible)
+            {
+                return;
+            }
+
+            var cherry = GameObjects.OfType<Cherry>().FirstOrDefault(c => c.IsActive);
+            if (cherry == null)
+            {
+                return;
+            }
+
+            var (pacmanRow, pacmanCol) = Map.WorldToTile(
+                pacman.X + pacman.Width / 2,
+                pacman.Y + pacman.Height / 2);
+
+            var (cherryRow, cherryCol) = Map.WorldToTile(
+            cherry.X + cherry.Width / 2,
+            cherry.Y + cherry.Height / 2);
+
+            if (pacmanRow == cherryRow && pacmanCol == cherryCol)
+            {
+                Score += cherry.BonusPoint;
+                cherry.IsActive = false;
+                _currentCherry = null;
+                if (Lives < 3)
+                {
+                    Lives++;
+                }
+                //desaparece la cherry actual para que pueda aparecer otra
+            }
+        }
+
+        private void SpawnCherry()
+        {
+            if (Map == null)
+            {
+                return; 
+            }
+
+            //solo una a la vez
+            if (_currentCherry != null && _currentCherry.IsActive) 
+            {
+                return;
+            }
+
+            //elegir entre las cuatro posiciones
+            var randomPosition = _cherryPositions[_random.Next(_cherryPositions.Length)];
+            var (x, y) = Map.TileToWorld(randomPosition.row, randomPosition.col);
+
+            var cherrySprite = SpriteManager.LoadSprite("CherrySprite.png");
+            _currentCherry = new Cherry(x, y, cherrySprite);
+
+            AddGameObject(_currentCherry);
+         }
         private void ResetGhosts()
         {
             var ghosts = GameObjects.OfType<Ghost>().ToList();
