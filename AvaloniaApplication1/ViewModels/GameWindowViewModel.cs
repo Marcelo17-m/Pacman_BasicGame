@@ -151,7 +151,7 @@ namespace AvaloniaApplication1.ViewModels
                 return;
             }
 
-            var startPos = _gameEngine.Map.TileToWorld(29, 2); 
+            var startPos = _gameEngine.Map.TileToWorld(29, 8); 
             //centrar el pacman en la celda que es 16x16 y el pacman 14x14 
             //double centeredX = startPos.x + (16 -14.5) / 2; 
             //double centeredY = startPos.y + (16 - 14.5) / 2;
