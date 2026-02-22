@@ -21,16 +21,20 @@ namespace AvaloniaApplication1.Models.Ghosts
         public bool IsEatable { get; set; } = false; // cuando se pone azul comestible
         public bool IsDead { get; set; } = false;
         private readonly int _spriteSize;
+        public double SpawnX { get; set; }
+        public double SpawnY { get; set; }
         public Ghost(double x, double y, GhostType type, IGhostBehavior behavior, Bitmap? sprite = null, GameMap? map = null, int spriteSize = 16)
         {
             X = x;
             Y = y;
+            SpawnX = x;
+            SpawnY = y;
             Type = type;
             _behavior = behavior;
             _map = map;
             _spriteSize = spriteSize;
-            Width = spriteSize - 1.5;
-            Height = spriteSize - 1.5; // por si acaso para que no gire mal
+            Width = spriteSize - 1;
+            Height = spriteSize - 1; // por si acaso para que no gire mal
             Zindex = 5; // uno menos que el pacman
             Sprite = sprite;
 
@@ -94,19 +98,19 @@ namespace AvaloniaApplication1.Models.Ghosts
             switch (Direction)
             {
                 case GhostDirection.Right:
-                    spriteX = 0 * _spriteSize; // Primer frame
+                    spriteX = (_animationFrame % 2 == 0) ? 0 * _spriteSize : 1 * _spriteSize; // Primer frame  0 * _spriteSize;
                     break;
 
                 case GhostDirection.Left:
-                    spriteX = 2 * _spriteSize; // Segundo frame
+                    spriteX = (_animationFrame % 2 == 0) ? 2 * _spriteSize : 3 * _spriteSize; // Segundo frame  2 * _spriteSize;
                     break;
 
                 case GhostDirection.Up:
-                    spriteX = 4 * _spriteSize; // Tercer frame
+                    spriteX = (_animationFrame % 2 == 0) ? 4 * _spriteSize : 5 * _spriteSize; // Tercer frame  4 * _spriteSize;
                     break;
 
                 case GhostDirection.Down:
-                    spriteX = 6 * _spriteSize; // Cuarto frame
+                    spriteX = (_animationFrame % 2 == 0) ? 6 * _spriteSize : 7 * _spriteSize; // Cuarto frame  6 * _spriteSize;
                     break;
                 default:
                     spriteX = 1;
@@ -156,7 +160,7 @@ namespace AvaloniaApplication1.Models.Ghosts
             if (_map.CanMoveTo(newX, newY, Width, Height))
             {
                 X = newX;
-                Y = newY;
+                Y = newY; 
             }
 
             UpdateSpriteRect();
@@ -211,6 +215,38 @@ namespace AvaloniaApplication1.Models.Ghosts
         private void MoveTowardsHome(double deltatime)
         {
             // logica para volver a la casa
+            if (_map == null)
+            {
+                return;
+            }
+
+            var homePos = _map.TileToWorld(10, 12);
+            double targetX = homePos.x + 0.5;
+            double targetY = homePos.y + 0.5;
+
+            //moverse a la casa
+            double dx = targetX - X;
+            double dy = targetY - Y;
+            double distance = Math.Sqrt(dx * dx + dy * dy);
+            //distancia total en pixeles
+
+            if (distance < 2) // llega a la casa
+            {
+                X = targetX;
+                Y = targetY;
+                IsDead = false;
+                IsEatable = false;
+                Speed = 60.0;
+                Direction = GhostDirection.Up;
+                return;
+            }
+
+            //x2 la velocidad
+            double moveSpeed = 120.0 * deltatime;
+            X += (dx / distance) * moveSpeed;
+            Y += (dy / distance) * moveSpeed;
+            // mueve en diagonal hacia la casita
+            UpdateSpriteRect();
         }
 
         public void Frighten()

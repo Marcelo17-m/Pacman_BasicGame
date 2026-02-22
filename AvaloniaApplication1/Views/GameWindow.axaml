@@ -9,14 +9,13 @@
         x:DataType="vm:GameWindowViewModel"
         Focusable="True">
 
-
       <!-- Esto es un extra que convierte cualquier objeto en un booleano para mostrar si es visible -->
   <UserControl.Resources>
     <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
     <converters:SpriteCropConverter x:Key="SpriteCropConverter"/>
   </UserControl.Resources>
   
-  <Canvas Width="1000" Height="650">
+  <Canvas Width="1000" Height="650" Focusable="True" Background="{DynamicResource PrimaryBackground}">
 
       <Border Width="1000"
               Height="650"
@@ -91,27 +90,74 @@
             Background="Transparent"
             Focusable="True"/>
 
-       <!-- UI el score, FPS, tiempo y boton para volver. -->
+       <!-- UI el score, FPS, tiempo, Vidas y boton para volver. -->
       <StackPanel HorizontalAlignment="Left" 
                 VerticalAlignment="Top" 
                 Margin="20,10">
       
-      <TextBlock Text="{Binding ScoreBoard.Score, StringFormat='SCORE:   {0}'}" 
+      <TextBlock Text="{Binding Score, StringFormat='SCORE:   {0}'}" 
                  FontSize="24" 
                  FontWeight="Bold"
                  Foreground="Yellow"
                  /> 
+
+      <TextBlock Text="{Binding Lives, StringFormat='LIVES: {0}'}" 
+                 FontSize="20" 
+                 FontWeight="Bold" 
+                 Foreground="Red" 
+                 Margin="0,5,0,0"/>
       
-      <TextBlock Text="{Binding ScoreBoard.ElapsedTime, StringFormat='TIME: {0}'}" 
+      <TextBlock Text="{Binding ElapsedTime, StringFormat='TIME: {0}'}" 
                  FontSize="16" 
                  Foreground="White"
                  Margin="5"/>
       
           <!-- agregar un futuro FontFamily para cambiar el estilo de letra -->
-      <TextBlock Text="{Binding ScoreBoard.CurrentFPS, StringFormat='FPS: {0}'}" 
+      <TextBlock Text="{Binding CurrentFPS, StringFormat='FPS: {0}'}" 
                  FontSize="14" 
                  Foreground="Gray"
                  Margin="5"/>
+
+          <!-- GameOverText oculto -->
+      <TextBlock Text="{Binding GameOverText}"
+                 FontSize="80"
+                 Foreground="DarkRed"
+                 FontWeight="ExtraBold"
+                 FontFamily="Console"
+                 IsVisible="{Binding IsGameOverVisible}"/>
+
+      <TextBox Text="{Binding PlayerName}"
+             FontSize="20"
+             FontWeight="Bold"
+             Foreground="Gold"
+             MaxLength="3"
+             Width="40"
+             Height="40"
+             Watermark="ABC"
+             IsVisible="{Binding IsGameOverVisible}"/>
+
+      <TextBlock Text="{Binding SaveErrorMessage}"
+                 FontSize="18"
+                 Foreground="White"
+                 HorizontalAlignment="Center"
+                 IsVisible="{Binding SaveErrorMessage}"/>
+
+      <Button Content="SAVE SCORE"
+            Command="{Binding SaveDataCommand}"
+            FontSize="24"
+            Foreground="Green"
+            Background="White"
+            IsVisible="{Binding IsGameOverVisible}"
+            />
+
+      <Button Content="SKIP"
+            Command="{Binding BackCommand}"
+            FontSize="24"
+            Foreground="Red"
+            Background="White"
+            IsVisible="{Binding IsGameOverVisible}"
+            />
+
     </StackPanel>
 
     <Button Command="{Binding BackCommand}"

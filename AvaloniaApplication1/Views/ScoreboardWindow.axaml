@@ -1,17 +1,61 @@
-<Window xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:AvaloniaApplication1.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="650"
         x:Class="AvaloniaApplication1.ScoreboardWindow"
         x:DataType="vm:ScoreboardWindowViewModel"
-        Title="ScoreboardWindow">
+        Focusable="True">
+
   <Canvas x:Name="GameCanvas" 
-          Width="800" 
-          Height="450" 
-          Background="{DynamicResource PrimaryBackGround}" 
+          Width="1000" 
+          Height="650"  
           Focusable="True"
+          Background="{DynamicResource PrimaryBackground}"
           >
+
+      <TextBlock Text="HIGH SCORES"
+                 Foreground="Yellow"
+                 FontSize="60"
+                 FontWeight="Bold"
+                 Canvas.Left="300"
+                 Canvas.Top="20"
+                 />
+
+      <ItemsControl ItemsSource="{Binding HighScores}"
+                    Canvas.Left="200"
+                    Canvas.Top="120"
+                    Width="500">
+
+          <ItemsControl.ItemTemplate>
+			  <DataTemplate>
+				  <Canvas Height="50" Width="500" Margin="5">
+
+                      <TextBlock Text="{Binding Name}"
+                                 FontSize="32"
+                                 FontWeight="Bold"
+                                 Foreground="White"
+                                 Canvas.Left="180"
+                                 Canvas.Top="8"/>
+
+                      <TextBlock Text="{Binding Points}"
+                                 FontSize="28"
+                                 FontWeight="Bold"
+                                 Foreground="Yellow"
+                                 Canvas.Left="380"
+                                 Canvas.Top="10"/>
+                  </Canvas>
+              </DataTemplate>
+          </ItemsControl.ItemTemplate>
+
+      </ItemsControl>
+
+      <Button Command="{Binding BackCommand}"
+              Classes="MenuButton"
+              Content="Back"
+              Canvas.Left="920"
+              Width="80"/>
+
     </Canvas>
-</Window>
+</UserControl>

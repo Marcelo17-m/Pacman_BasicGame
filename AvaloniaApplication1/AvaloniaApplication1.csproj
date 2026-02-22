@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="Assets\Media\" />
+    <Folder Include="Assets\Scores\" />
     <Folder Include="Assets\Sprites\" />
   </ItemGroup>
 </Project>

@@ -36,6 +36,7 @@
         <Button Content="Scoreboard" 
                 Classes="MenuButton" 
                 Margin="0,155,0,345"
+                Command="{Binding GoScoreboardCommand}"
                 />
         <Button Command="{Binding ExitCommand}" Content="Exit" 
                 Classes="MenuButton" 
@@ -80,6 +81,9 @@
             <ContentControl.DataTemplates>
                 <DataTemplate DataType="vm:GameWindowViewModel">
                     <local:GameWindow />
+                </DataTemplate>
+                <DataTemplate DataType="vm:ScoreboardWindowViewModel">
+                    <local:ScoreboardWindow />
                 </DataTemplate>
             </ContentControl.DataTemplates>
         </ContentControl>
