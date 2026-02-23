@@ -26,5 +26,13 @@
   {
     "Name": "DSA",
     "Points": 200
+  },
+  {
+    "Name": "LOM",
+    "Points": 1370
+  },
+  {
+    "Name": "POU",
+    "Points": 1630
   }
 ]
