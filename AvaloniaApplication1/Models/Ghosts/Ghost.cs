@@ -219,10 +219,9 @@ namespace AvaloniaApplication1.Models.Ghosts
             {
                 return;
             }
-
-            var homePos = _map.TileToWorld(10, 12);
-            double targetX = homePos.x + 0.5;
-            double targetY = homePos.y + 0.5;
+            // se devuelven a su spawn ligeramente centrados
+            double targetX = SpawnX + 0.5;
+            double targetY = SpawnY + 0.5;
 
             //moverse a la casa
             double dx = targetX - X;
