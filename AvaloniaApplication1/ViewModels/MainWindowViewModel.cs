@@ -15,7 +15,7 @@ namespace AvaloniaApplication1.ViewModels
         [ObservableProperty]
         private ViewModelBase? _currentPage;
 
-        public bool IsMenuVisible => CurrentPage == null;
+
         public MainWindowViewModel()
         {
             _currentPage = null;
@@ -25,20 +25,17 @@ namespace AvaloniaApplication1.ViewModels
         public void GoGame()
         {
             CurrentPage = new GameWindowViewModel(this);
-            OnPropertyChanged(nameof(IsMenuVisible));
         }
 
         [RelayCommand]
         public void GoScoreboard()
         {
             CurrentPage = new ScoreboardWindowViewModel(this);
-            OnPropertyChanged(nameof(IsMenuVisible));
         }
 
         public void GoBackToMenu()
         {
             CurrentPage = null;
-            OnPropertyChanged(nameof(IsMenuVisible));
         }
 
         [RelayCommand]

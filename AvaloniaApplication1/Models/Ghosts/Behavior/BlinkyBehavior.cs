@@ -75,6 +75,7 @@ namespace AvaloniaApplication1.Models.Ghosts.Behavior
             return ghost.Direction; // seguir la misma direccion si no hay mas opciones
         }
 
+        //para que no se gire de la nada si no que diga por su camino y gire en algun lado
         private bool IsOpposite(GhostDirection dir1, GhostDirection dir2)
         {
             return (dir1 == GhostDirection.Up &&  dir2 == GhostDirection.Down) ||

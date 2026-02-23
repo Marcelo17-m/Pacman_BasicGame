@@ -32,11 +32,13 @@ namespace AvaloniaApplication1.Models.Ghosts.Behavior
             }
             var blinky = allGhost?.FirstOrDefault(g => g.Type == GhostType.Blinky);
 
+            // si no encuentra a blinky actua como el
             if (blinky == null)
             {
                 return new BlinkyBehavior().DecideNextDirection(ghost, pacman, map);
             }
 
+            //calculamos la posicion del pacman de primeras
             double midX = pacman.X;
             double midY = pacman.Y;
 
@@ -55,9 +57,13 @@ namespace AvaloniaApplication1.Models.Ghosts.Behavior
                     midY += 2 * 16;
                     break;
             }
-
+            //target va a ser el reflejo de blinky con respecto al punto
+            //medio que sacamos arriba
+            //mid va a estar 2 tiles adelante de pacman.
             double targetX = midX + (midX - blinky.X);
             double targetY = midY + (midY - blinky.Y);
+            //el target va a estar al otro lado de blinky estilo espejo
+            //
 
             return GetBestDirectionToTarget(ghost, targetX, targetY, map);
         }
@@ -94,10 +100,12 @@ namespace AvaloniaApplication1.Models.Ghosts.Behavior
                     possibleDirections.Add(dir);
                 }
             }
+            // elegir una direccion al azar del as posibles
             if (possibleDirections.Count > 0)
             {
                 return possibleDirections[_random.Next(possibleDirections.Count)];
-
+                //si ahy tres direcciones digamos
+                //el random va a escoger uno aleatorio para ir
             }
             return ghost.Direction;
         }
