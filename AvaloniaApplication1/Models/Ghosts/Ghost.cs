@@ -19,7 +19,7 @@ namespace AvaloniaApplication1.Models.Ghosts
         public GhostType Type { get; set; }
         public double Speed { get; set; } = 60.0; // los fps a los que corre
         public bool IsEatable { get; set; } = false; // cuando se pone azul comestible
-        public bool IsDead { get; set; } = false;
+        public bool IsDead { get; set; } = false; // cuando se lo full come
         private readonly int _spriteSize;
         public double SpawnX { get; set; }
         public double SpawnY { get; set; }
@@ -122,7 +122,8 @@ namespace AvaloniaApplication1.Models.Ghosts
 
         public override void Update(double deltaTime)
         {
-            base.Update(deltaTime);
+            base.Update(deltaTime); // esto al final es un extra para llamar al padre si en el futuro se
+            //agrega alguna funcionalidad mas
 
             if (_map == null) return;
 

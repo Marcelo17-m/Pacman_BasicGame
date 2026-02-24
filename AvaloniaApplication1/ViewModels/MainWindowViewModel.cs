@@ -15,6 +15,8 @@ namespace AvaloniaApplication1.ViewModels
         [ObservableProperty]
         private ViewModelBase? _currentPage;
 
+        [ObservableProperty]
+        private bool _isMusicEnable = false;
 
         public MainWindowViewModel()
         {
@@ -51,10 +53,10 @@ namespace AvaloniaApplication1.ViewModels
         }
 
         [RelayCommand]
-        private void ToggleAudio(bool isChecked)
+        private void ToggleAudio()
         {
             string namesong = "PacManOriginalThemeTheCantinaBand";
-            if (isChecked)
+            if (IsMusicEnable)
             {
                 SoundManager.PlaySound(namesong, true);
             }

@@ -19,7 +19,7 @@ namespace AvaloniaApplication1.Models
             Y = y;
             Width = spriteSize;
             Height = spriteSize;
-            Zindex = 4; // mismo de los ghost
+            Zindex = 4; // menos 1 de los ghost
             Sprite = sprite;
         }
 

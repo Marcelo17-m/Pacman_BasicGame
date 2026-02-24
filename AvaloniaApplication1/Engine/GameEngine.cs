@@ -182,7 +182,7 @@ namespace AvaloniaApplication1.Engine
                 var (pelletRow, pelletCol) = Map.WorldToTile(
                 pellet.X + pellet.Width / 2,
                 pellet.Y + pellet.Height / 2
-            );
+                );
 
                 // si estan en la misma celda
                 if (pelletRow == row && pelletCol == col)
