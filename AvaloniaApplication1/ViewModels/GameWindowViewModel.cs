@@ -48,6 +48,12 @@ namespace AvaloniaApplication1.ViewModels
         private string _gameOverText = "";
 
         [ObservableProperty]
+        private string _gameWinText = "";
+
+        [ObservableProperty]
+        private bool _isGameWinVisible = false;
+
+        [ObservableProperty]
         private string _playerName = "";
 
         [ObservableProperty]
@@ -77,6 +83,7 @@ namespace AvaloniaApplication1.ViewModels
 
             _gameEngine.PacmanDied += OnPacmanDied;
             _gameEngine.GameOver += OnGameOver;
+            _gameEngine.GameWin += OnWin;
 
             _gameLoopTimer = new DispatcherTimer
             {
@@ -229,6 +236,13 @@ namespace AvaloniaApplication1.ViewModels
             //limpiarlo
             PlayerName = "";
             SaveErrorMessage = "";
+        }
+
+        private void OnWin()
+        {
+            IsGameWinVisible = true;
+            _gameLoopTimer.Stop();
+            GameWinText = "YOU WONNN!!!";
         }
 
         [RelayCommand]

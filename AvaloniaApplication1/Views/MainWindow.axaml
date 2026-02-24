@@ -18,7 +18,7 @@
 
     <Grid Width="1000" Height="650" Background="{DynamicResource PrimaryBackGround}">
 
-        <Grid >
+        <Grid IsVisible="{Binding IsMenuVisible}">
         <TextBlock
             Text="PACMAN" 
             FontSize="49" 

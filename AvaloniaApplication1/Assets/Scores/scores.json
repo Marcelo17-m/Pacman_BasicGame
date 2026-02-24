@@ -34,5 +34,13 @@
   {
     "Name": "POU",
     "Points": 1630
+  },
+  {
+    "Name": "POU",
+    "Points": 2490
+  },
+  {
+    "Name": "TOU",
+    "Points": 1400
   }
 ]
