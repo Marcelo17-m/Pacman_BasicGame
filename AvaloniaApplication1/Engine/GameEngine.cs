@@ -204,10 +204,10 @@ namespace AvaloniaApplication1.Engine
                         //se come una normal
                     }
 
-                    if(_amountOfPelletsEaten >= 20)
-                    {
-                        GameWin?.Invoke();
-                    }
+                    //if(_amountOfPelletsEaten >= 20)
+                    //{
+                    //    GameWin?.Invoke();
+                    //}
 
                     Map.SetTile(row, col, MapTileType.Empty);
                 }
