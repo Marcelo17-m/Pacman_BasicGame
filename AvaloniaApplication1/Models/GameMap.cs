@@ -14,7 +14,7 @@ namespace AvaloniaApplication1.Models
         public int Columns { get; } //cantidad de columnas
         public int Rows { get; } //cantidad de filas
 
-        private readonly MapTileType[,] _tiles; 
+        private readonly MapTileType[,] _tiles; // Array 2D con el tipo de cada celda
 
         public GameMap(int columns, int rows, int tileWidth = 16, int tileHeight = 16)
         {
@@ -71,14 +71,18 @@ namespace AvaloniaApplication1.Models
         {
             int colMin = (int)(worldX / TileWidth);
             int rowMin = (int)(worldY / TileHeight);
+            // -0.001 para evitar redondeo incorrecto en bordes exactos
             int colMax = (int)((worldX + width - 0.001) / TileWidth);
             int rowMax = (int)((worldY + height - 0.001) / TileHeight);
+            //este calculo verifica cuantas celdas ocupa nuestro objeto
 
+            //Asegurar que estén dentro del mapa
             colMin = Math.Clamp(colMin, 0, Columns - 1);
             colMax = Math.Clamp(colMax, 0, Columns - 1);
             rowMin = Math.Clamp(rowMin, 0, Rows - 1);
             rowMax = Math.Clamp(rowMax, 0, Rows - 1);
 
+            //verificar cada celda que ocupa
             for (int row = rowMin; row <= rowMax; row++)
             {
                 for (int col = colMin; col <= colMax; col++)
@@ -93,8 +97,7 @@ namespace AvaloniaApplication1.Models
 
         }
 
-        // Crea un mapa de prueba: borde de muros y el resto vacio.
-
+        // Crear el mapa a partir del plano que le pasamos del PacmanMap
         public static GameMap CreateFromLayout(string[] layout, int tileSize = 16)
         {
             int rows = layout.Length;

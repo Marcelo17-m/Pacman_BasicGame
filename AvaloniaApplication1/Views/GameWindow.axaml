@@ -126,6 +126,13 @@
                  FontFamily="Console"
                  IsVisible="{Binding IsGameOverVisible}"/>
 
+      <TextBlock Text="{Binding GameWinText}"
+                 FontSize="80"
+                 Foreground="Green"
+                 FontWeight="ExtraBold"
+                 FontFamily="Console"
+                 IsVisible="{Binding IsGameWinVisible}"/>
+
       <TextBox Text="{Binding PlayerName}"
              FontSize="20"
              FontWeight="Bold"

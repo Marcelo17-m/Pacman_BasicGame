@@ -48,6 +48,12 @@ namespace AvaloniaApplication1.ViewModels
         private string _gameOverText = "";
 
         [ObservableProperty]
+        private string _gameWinText = "";
+
+        [ObservableProperty]
+        private bool _isGameWinVisible = false;
+
+        [ObservableProperty]
         private string _playerName = "";
 
         [ObservableProperty]
@@ -77,6 +83,7 @@ namespace AvaloniaApplication1.ViewModels
 
             _gameEngine.PacmanDied += OnPacmanDied;
             _gameEngine.GameOver += OnGameOver;
+            _gameEngine.GameWin += OnWin;
 
             _gameLoopTimer = new DispatcherTimer
             {
@@ -113,6 +120,7 @@ namespace AvaloniaApplication1.ViewModels
                     var vm = new GameObjectViewModel(gameObject);
                     _viewModelMap[gameObject] = vm;
                     GameObjects.Add(vm);
+                    //esta revisando comparando internamente si existe con el ViewModel del object para añadrlo
                 }
             }
 
@@ -120,6 +128,7 @@ namespace AvaloniaApplication1.ViewModels
             {
                 vm.SyncFromModel();
             }
+            //se sincronizan sus datos
 
             for (int i = GameObjects.Count - 1; i >= 0; i--)
             {
@@ -130,6 +139,7 @@ namespace AvaloniaApplication1.ViewModels
                     GameObjects.RemoveAt(i);
                 }
             }
+            //cuando este inactivo se saca.
         }
 
         public void StartGame()
@@ -175,10 +185,10 @@ namespace AvaloniaApplication1.ViewModels
 
             _gameEngine.CreatePellets(); //crear los puntos y power ups
 
-            SyncGameObjects();
+            SyncGameObjects(); // sincronizar todo
         }
         
-        public void HandleKeyPress(Avalonia.Input.Key key)
+        public void HandleKeyPress(Avalonia.Input.Key key) //para las flechas
         {
             if (_pacman == null) return;
             
@@ -226,6 +236,13 @@ namespace AvaloniaApplication1.ViewModels
             //limpiarlo
             PlayerName = "";
             SaveErrorMessage = "";
+        }
+
+        private void OnWin()
+        {
+            IsGameWinVisible = true;
+            _gameLoopTimer.Stop();
+            GameWinText = "YOU WONNN!!!";
         }
 
         [RelayCommand]

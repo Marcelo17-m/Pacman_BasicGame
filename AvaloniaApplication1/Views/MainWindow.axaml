@@ -18,12 +18,12 @@
 
     <Grid Width="1000" Height="650" Background="{DynamicResource PrimaryBackGround}">
 
-        <Grid >
+        <Grid IsVisible="{Binding IsMenuVisible}">
         <TextBlock
             Text="PACMAN" 
             FontSize="49" 
             FontWeight="Bold" 
-            Foreground="#FFFFF53D" 
+            Foreground="Yellow" 
             HorizontalAlignment="Center" 
             VerticalAlignment="Top" 
             Margin="0,24,0,0"
@@ -42,7 +42,7 @@
                 Classes="MenuButton" 
                 Margin="0,200,0,345"
                 />
-        <ToggleButton IsChecked="False"
+        <ToggleButton IsChecked="{Binding IsMusicEnable}"
               HorizontalAlignment="Left"
               VerticalAlignment="Bottom"
               Margin="16"
@@ -52,7 +52,6 @@
               BorderBrush="White"
               BorderThickness="1"
               Command="{Binding ToggleAudioCommand}"
-              CommandParameter="{Binding $self.IsChecked}"
               >
 
         <Grid>

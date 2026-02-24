@@ -267,11 +267,13 @@ namespace AvaloniaApplication1.Models
             {
                 case PacmanDirection.Up:
                 case PacmanDirection.Down:
+                    // Si va a girar vertical, alinear en X
                     X = tileCenterX - Width / 2;
                     break;
 
                 case PacmanDirection.Left:
                 case PacmanDirection.Right:
+                    // Si va a girar horizontal, alinear en Y
                     Y = tileCenterY - Height / 2;
                     break;
             }

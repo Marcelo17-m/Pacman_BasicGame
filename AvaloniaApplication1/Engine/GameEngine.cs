@@ -33,6 +33,7 @@ namespace AvaloniaApplication1.Engine
 
         public event Action? PacmanDied;
         public event Action? GameOver;
+        public event Action? GameWin;
 
         private int _frameCount;
 
@@ -41,12 +42,13 @@ namespace AvaloniaApplication1.Engine
         private DateTime _lastUpdateTime;
         private bool _isFrightenModeActive = false;
         private int _frightenFramesRemaining = 0;
-        private const int _frightenFramesDuration = 600;
+        private const int _frightenFramesDuration = 400; // 10 segundos promedio digamos a 40fps
 
         public int Score { get; private set; }
 
         public int Lives { get; private set; } = 3;
 
+        private int _amountOfPelletsEaten = 0;
         private const int _pelletPoints = 10; // es constante osea no se cambia
         private const int _powepelletPoints = 50;
         private const int _ghostPoints = 200;
@@ -182,11 +184,12 @@ namespace AvaloniaApplication1.Engine
                 var (pelletRow, pelletCol) = Map.WorldToTile(
                 pellet.X + pellet.Width / 2,
                 pellet.Y + pellet.Height / 2
-            );
+                );
 
                 // si estan en la misma celda
                 if (pelletRow == row && pelletCol == col)
                 {
+                    _amountOfPelletsEaten++;
                     SoundManager.PlaySound("pacman_chomp");
                     pellet.IsActive = false;
 
@@ -200,6 +203,11 @@ namespace AvaloniaApplication1.Engine
                         Score += _pelletPoints;
                         //se come una normal
                     }
+
+                    //if(_amountOfPelletsEaten >= 20)
+                    //{
+                    //    GameWin?.Invoke();
+                    //}
 
                     Map.SetTile(row, col, MapTileType.Empty);
                 }
